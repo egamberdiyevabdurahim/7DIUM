@@ -11,8 +11,8 @@
   <meta content="" name="keywords">
 
   <!-- Favicons -->
-  <link href="{% static 'assets/img/Maktab.jpg'%}" rel="icon">
-  <link href="{% static 'assets/img/Maktab.jpg'%}" rel="apple-touch-icon">
+  <link href="{% static 'assets/img/maktab.jpg'%}" rel="icon">
+  <link href="{% static 'assets/img/maktab.jpg'%}" rel="apple-touch-icon">
 
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
@@ -51,55 +51,26 @@
 
       <nav id="navbar" class="navbar order-last order-lg-0">
         <ul>
-          {% if request.user.is_authenticated %}
+          
           {% if request.user.status == 'Admin'%}
-         <a href="{% url 'create'%}"><button class="btn btn-outline-success" type="submit">Yangilik Yaratish</button></a>
+         <!-- <a href="{% url 'create'%}"><button class="btn btn-outline-success" type="submit">Yangilik Yaratish</button></a> -->
          {%endif%}
          <!-- <a href="{% url 'logout'%}"><button class="btn btn-outline-success" type="submit">Log-Out</button></a> -->
          <form class="d-flex" role="search">
             <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="find">
             <button class="btn btn-outline-success" type="submit">Qidirish</button>
           </form>
-          <li><a class="active" href="{% url 'home'%}">Home</a></li>
-          <li><a href="{% url 'haqida'%}">Haqida</a></li>
+          {% if request.user.is_authenticated %}
+          <a class="text-primary" href="{% url 'create'%}">Create News</a>
           {%else%}
-          <a href="{% url 'signin'%}"><button class="btn btn-outline-success" type="submit">Log-In</button></a>
-          <!-- <a href="{% url 'create'%}"><button class="btn btn-outline-success" type="submit">Yangilik Yaratish</button></a> -->
-          <form class="d-flex" role="search">
-            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="find">
-            <button class="btn btn-outline-success" type="submit">Qidirish</button>
-          </form>
+          <a class="text-primary" href="{% url 'signin'%}">Log-In</a>
+          {%endif%}
           <li><a class="active" href="{% url 'home'%}">Home</a></li>
           <li><a href="{% url 'haqida'%}">Haqida</a></li>
-          {%endif%}
-          <!-- <li><a href="courses.html">Courses</a></li>
-          <li><a href="trainers.html">Trainers</a></li>
-          <li><a href="events.html">Events</a></li>
-          <li><a href="pricing.html">Pricing</a></li>
-
-          <li class="dropdown"><a href="#"><span>Drop Down</span> <i class="bi bi-chevron-down"></i></a>
-            <ul>
-              <li><a href="#">Drop Down 1</a></li>
-              <li class="dropdown"><a href="#"><span>Deep Drop Down</span> <i class="bi bi-chevron-right"></i></a>
-                <ul>
-                  <li><a href="#">Deep Drop Down 1</a></li>
-                  <li><a href="#">Deep Drop Down 2</a></li>
-                  <li><a href="#">Deep Drop Down 3</a></li>
-                  <li><a href="#">Deep Drop Down 4</a></li>
-                  <li><a href="#">Deep Drop Down 5</a></li>
-                </ul>
-              </li>
-              <li><a href="#">Drop Down 2</a></li>
-              <li><a href="#">Drop Down 3</a></li>
-              <li><a href="#">Drop Down 4</a></li>
-            </ul>
-          </li> -->
-          <!-- <li><a href="contact.html">Contact</a></li> -->
-        </ul>
         <i class="bi bi-list mobile-nav-toggle"></i>
       </nav><!-- .navbar -->
 
-      <!-- <a href="courses.html" class="get-started-btn">Get Started</a> -->
+     
 
     </div>
   </header><!-- End Header -->
@@ -118,37 +89,104 @@
     <!-- ======= About Section ======= -->
     <section id="about" class="about">
       <div class="container" data-aos="fade-up">
-{% for x in news%}
-        <div class="row">
-          <div class="col-lg-5 order-1 order-lg-2" data-aos="fade-left" data-aos-delay="100">
-            {%if x.photo%}
-            <img src="{{x.photo.url}}" class="img-fluid" alt="">
-            {%endif%}
-          </div>
-          {{x.created_at}}
-          <div class="col-lg-6 pt-4 pt-lg-0 order-2 order-lg-1 content">
-            <p><a href="{% url 'edit' x.id%}"><button class="btn btn-outline-success" type="submit">Tahrirlash</button></a></p>
-            <h3>{{x.title}}</h3>
-            <p class="fst-italic">
-              {%if x.content%}
-              {{x.content}}
-             <p><a href="{% url 'delete' x.id%}"><button class="btn btn-outline-success" type="submit">O'chirish</button></a></p>
-              {%endif%}
-            </p>
-            <!-- <ul>
-              <li><i class="bi bi-check-circle"></i> Ullamco laboris nisi ut aliquip ex ea commodo consequat.</li>
-              <li><i class="bi bi-check-circle"></i> Duis aute irure dolor in reprehenderit in voluptate velit.</li>
-              <li><i class="bi bi-check-circle"></i> Ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate trideta storacalaperda mastiro dolore eu fugiat nulla pariatur.</li>
-            </ul>
-            <p>
-              Ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-            </p> -->
 
           </div>
           <hr>
-        </div>
-{% endfor %}
+
       </div>
+      {%if request.user.is_superuser%}
+      <div class="container">
+      <div class="card mb-3" style="max-width: 1200px;">
+        {% for x in news%}
+        <div class="row g-0">
+          <div class="col-md-4">
+            {%if x.photo%}
+            <img src="{{x.photo.url}}" class="img-fluid rounded-start" style="max-block-size: 250px;" alt="...">
+            {%endif%}
+          </div>
+          <div class="col-md-8">
+            <div class="card-body">
+              <!-- <a href="{% url 'edit' x.id%}"><p class="navbar-brand text-primary">Edit</p></a> -->
+              <a href="{% url 'opennews' x.slug%}"><h5 class="card-title">{{x.title|truncatechars:55}}</h5></a>
+              <br>
+              <p class="card-text">{{x.content|truncatechars:75}}</p>
+              <p class="card-text"><small class="text-body-secondary">{{x.created_at}}</small></p>
+              {%if request.user.is_authenticated%}
+              <form method="post" action="{% url 'like' x.slug %}">
+                {% csrf_token %}
+                {% if request.user in x.likenews_news.user.all %}
+                <button type="submit" class="btn"><i class="fa-solid fa-heart" style="color: #ff0000;"></i></button>
+                {% else %}
+                <button type="submit" class="btn"><i class="fa-regular fa-heart"></i></button>
+                {% endif %}<span>{{x.sum_of_likes}}</span>
+              </form>
+              <a href="{% url 'delete' x.id%}"><p class="navbar-brand text-primary">Delete</p></a>
+              {% else %}
+                <i class="fa-regular fa-heart"></i>
+                <span>{{x.sum_of_likes}}</span>
+              {%endif%}
+            </div>
+          </div>
+        </div>
+        
+      <hr>
+      {%endfor%}
+      </div>
+    </div>
+    {%else%}
+    <div class="container">
+      <div class="card mb-3" style="max-width: 1200px;">
+        {% for x in news%}
+        <div class="row g-0">
+          <div class="col-md-4">
+            {%if x.photo%}
+            <img src="{{x.photo.url}}" class="img-fluid rounded-start" style="max-block-size: 250px;" alt="...">
+            {%endif%}
+          </div>
+          <div class="col-md-8">
+            <div class="card-body">
+              <a href="{% url 'opennews' x.slug%}"><h5 class="card-title">{{x.title|truncatechars:55}}</h5></a>
+              <br>
+              <p class="card-text">{{x.content|truncatechars:75}}</p>
+              <p class="card-text"><small class="text-body-secondary">{{x.created_at}}</small></p>
+              {%if request.user.is_authenticated%}
+              <form method="post" action="{% url 'like' x.slug %}">
+                {% csrf_token %}
+                {% if request.user in x.likenews_news.user.all %}
+                <button type="submit" class="btn"><i class="fa-solid fa-heart" style="color: #ff0000;"></i></button>
+                {% else %}
+                <button type="submit" class="btn"><i class="fa-regular fa-heart"></i></button>
+                {% endif %}<span>{{x.sum_of_likes}}</span>
+              </form>
+              {% else %}
+                <i class="fa-regular fa-heart"></i>
+                <span>{{x.sum_of_likes}}</span>
+              {%endif%}
+            </div>
+          </div>
+        </div>
+        
+      <hr>
+      {%endfor%}
+      </div>
+    </div>
+    {%endif%}
+      <!-- <div class="card mb-3" style="max-height: 300px; max-width: 1000px;">
+        <div class="row g-0">
+          <div class="col-md-4">
+            <img src="..." class="img-fluid rounded-start" alt="...">
+          </div>
+          <div class="col-md-8">
+            <div class="card-body">
+              <h5 class="card-title"></h5>
+              <p class="card-text">{{x.content}}</p>
+              <p class="card-text"><small class="text-body-secondary">{{x.created_at}}</small></p>
+            </div>
+          </div>
+        </div> -->
+      </div>
+      
+    </div>
     </section><!-- End About Section -->
     <nav aria-label="Page navigation example" class="col-1 mx-auto">
       <ul class="pagination">
@@ -543,8 +581,9 @@
         </div>
       </div>
     </div> -->
-    
+    {% if request.user.is_authenticated %}
 <a class="navbar-brand text-danger" href="{% url 'logout'%}">LogOut</a>
+{%endif%}
 <hr>
     <div class="container d-md-flex py-4">
 
@@ -583,7 +622,7 @@
   <!-- Template Main JS File -->
   <script src="{% static 'assets/js/main.js'%}"></script>
   
-
+  <script src="https://kit.fontawesome.com/e66b969786.js" crossorigin="anonymous"></script>
 </body>
 
 </html>

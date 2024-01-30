@@ -8,7 +8,13 @@
 <body>
     <form method="post", enctype="multipart/form-data">
         {%csrf_token%}
-        {{form.as_p}}
+        <input type="text" name="title">
+        <input type="text" name="content">
+        <input type="image" name="photo">
+        <br>
+        <br>
+        <br><br>
         <button type="submit">Joylash</button>
+        </form>
 </body>
 </html>

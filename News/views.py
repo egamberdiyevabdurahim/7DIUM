@@ -3,7 +3,7 @@ from django.views import View
 
 
 from .forms import NewsForm
-from .models import News, LikeNews, Haqida
+from .models import News, LikeNews, Haqida, Photo
 from User.models import User
 
 
@@ -21,34 +21,52 @@ class Haqida(View):
 
 class CreateNews(View):
 	def get(self, request):
-		form = NewsForm()
-		return render(request, 'create.html', {'form':form})
+		return render(request, 'create.html')
 
 	def post(self, request):
-		form = NewsForm(data=request.POST, files=request.FILES)
-		if form.is_valid():
-			form.save()
+		photo_list = request.FILES.getlist('photo', [])
+		title=request.POST.get('title')
+		content=request.POST.get('content')
+		# photo = request.FILES.get('photo')
+		if title:
+			news = News.objects.create(
+				title=title,
+				content=content,
+			)
+			for x in photo_list:
+				p = Photo.objects.create(photo=x)
+				news.photo.add(p)
 			return redirect('home')
-		return render(request, 'create.html', {'form':form})
+		return render(request, 'create.html')
+
+
+class OpenNews(View):
+	def get(self, request, slug):
+		news = News.objects.get(slug=slug)
+		news.viewed_list = news.viewed_list+0
+		news.sum_of_vieved_list()
+            
+		return render(request, 'course-details.html', {'news':news})
 
 
 class EditNews(View):
 	def get(self, request, id):
 		news = News.objects.get(id=id)
-		form = NewsForm(instance=news)
-		return render(request, 'create.html', {'form':form})
+		return render(request, 'create.html', {'form':news})
 
 	def post(self, request, id):
 		news = News.objects.get(id=id)
-		form = NewsForm(instance=news, data=request.POST, files=request.FILES)
-		if form.is_valid():
-			# user = form.cleaned_data['user']
-			# user = News.objects.create(
-			# 	user=request.user
-            # )
-			form.save()
+		title=request.POST.get('title')
+		content=request.POST.get('content')
+		photo = request.FILES.get('photo')
+		if title.exsists():
+			News.objects.create(
+				title=title,
+				content=content,
+				photo=photo
+			)
 			return redirect('home')
-		return render(request, 'create.html', {'form':form})
+		return render(request, 'create.html', {'form':news})
 
 
 class DeleteNews(View):

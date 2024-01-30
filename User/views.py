@@ -9,32 +9,37 @@ from News.models import LikeNews, News
 
 class SignUp(View):
 	def get(self, request):
-		form = UserForm()
-		return render(request, 'signup.html', {'form':form})
+		return render(request, 'signup.html')
 
 	def post(self, request):
-		form = UserForm(data = request.POST, files = request.FILES)
-		if form.is_valid():
-			form.save()
+		username = request.POST.get('username')
+		password = request.POST.get('password')
+		if username and password:
+			user = User.objects.create(
+				username=username,
+				password=password
+			)
+			user.set_password(password)
+			user.save()
+			user = authenticate(username=username, password=password)
+			if user is not None:
+				login(request, user)
 			return redirect('home')
-		return render(request, 'signup.html', {'form':form})
+		return render(request, 'signup.html')
 
 
 class SignIn(View):
 	def get(self, request):
-		form = SignInForm()
-		return render(request, 'signin.html', {'form':form})
+		return render(request, 'indexx.html')
 
 	def post(self, request):
-		form = SignInForm(data = request.POST)
-		if form.is_valid():
-			username=request.POST.get('username')
-			password=request.POST.get('password')
-			user = authenticate(username=username, password=password)
-			if user is not None:
-				login(request, user)
-				return redirect('home')
-		return render(request, 'signin.html', {'form':form})
+		username=request.POST.get('username')
+		password=request.POST.get('password')
+		user = authenticate(username=username, password=password)
+		if user is not None:
+			login(request, user)
+			return redirect('home')
+		return render(request, 'indexx.html')
 
 
 class LogOut(View):
@@ -43,9 +48,9 @@ class LogOut(View):
 		return redirect('home')
 
 
-class LikeNews(View):
-	def post(self, request, id):
-		news = News.objects.get(id=id)
+class Like(View):
+	def post(self, request, slug):
+		news = News.objects.get(slug=slug)
 		if LikeNews.objects.filter(news=news):
 			like = LikeNews.objects.filter(news=news).first()
 			if request.user in like.user.all():
@@ -58,3 +63,4 @@ class LikeNews(View):
 			)
 		like.user.add(request.user)
 		return redirect('home')
+

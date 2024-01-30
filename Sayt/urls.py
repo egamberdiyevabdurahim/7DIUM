@@ -21,8 +21,8 @@ from django.conf.urls.static import static
 
 
 from .views import Home
-from News.views import Haqida, CreateNews, EditNews, DeleteNews
-from User.views import SignUp, SignIn, LogOut, LikeNews
+from News.views import Haqida, CreateNews, EditNews, DeleteNews, OpenNews
+from User.views import SignUp, SignIn, LogOut, Like
 
 
 urlpatterns = [
@@ -35,7 +35,8 @@ urlpatterns = [
     path('sign-up/', SignUp.as_view(), name='signup'),
     path('sign-in/', SignIn.as_view(), name='signin'),
     path('log-out/', LogOut.as_view(), name='logout'),
-    path('like/<int:id>', LikeNews.as_view(), name='like')
+    path('like/<slug:slug>/', Like.as_view(), name='like'),
+    path('<slug:slug>/', OpenNews.as_view(), name='opennews'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
